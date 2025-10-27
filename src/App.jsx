@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { AlertProvider } from './components/alert'
 import './App.css'
 import PageProduct from './app/products/page'
 import PageTransaction from './app/transactions/page';
@@ -11,6 +12,7 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <AlertProvider>
       <div className="min-h-screen bg-gray-50">
         <div className="bg-white shadow">
           <div className="container mx-auto px-8 py-4">
@@ -52,6 +54,7 @@ function App() {
         {activeTab === 'products' ? <PageProduct /> : activeTab === 'patients' ? <PagePatient /> : <PageTransaction />}
 
       </div>
+      </AlertProvider>
     </QueryClientProvider>
   )
 }

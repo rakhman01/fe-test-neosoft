@@ -4,11 +4,14 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import PatienttModal from "./patient-modal";
 import { useState } from "react";
 import Button from "../../../components/reusable-button";
+import { useAlert } from "../../../components/alert";
+import LoaderTab from "../../../components/loader";
 
 export default function PatientContainer() {
   const [openModal, setOpenModal] = useState(false);
   const [detailData, setDetailData] = useState(null);
   const queryClient = useQueryClient();
+    const { showAlert } = useAlert();
 
   const { isPending, isError, data, error } = useQuery({
     queryKey: ["patient"],
@@ -21,10 +24,10 @@ export default function PatientContainer() {
       queryClient.invalidateQueries({ queryKey: ["patient"] });
       setOpenModal(false);
       setDetailData(null);
-      alert("Pasien created successfully!");
+      showAlert("Pasien created successfully!", "success");
     },
     onError: (error) => {
-      alert(`Error creating patient: ${error.message}`);
+      showAlert(`Error creating patient: ${error.message}`,'error');
     },
   });
 
@@ -34,10 +37,11 @@ export default function PatientContainer() {
       queryClient.invalidateQueries({ queryKey: ["patient"] });
       setOpenModal(false);
       setDetailData(null);
-      alert("Pasien updated successfully!");
+           showAlert("Pasien created successfully!", "success");
+
     },
     onError: (error) => {
-      alert(`Error updating patient: ${error.message}`);
+      showAlert(`Error updating patient: ${error.message}`,'error');
     },
   });
 
@@ -45,10 +49,10 @@ export default function PatientContainer() {
     mutationFn: deletePatient,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["patient"] });
-      alert("Pasien deleted successfully!");
+      showAlert("Pasien deleted successfully!",'success');
     },
     onError: (error) => {
-      alert(`Error deleting patient: ${error.message}`);
+      showAlert(`Error deleting patient: ${error.message}`,'error');
     },
   });
 
@@ -77,7 +81,7 @@ export default function PatientContainer() {
   };
 
   if (isPending) {
-    return <div className="p-8 text-center">Loading...</div>;
+    return <LoaderTab />
   }
 
   if (isError) {

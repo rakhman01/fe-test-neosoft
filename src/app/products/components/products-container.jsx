@@ -4,11 +4,14 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import ProductModal from "./products-modal";
 import { useState } from "react";
 import Button from "../../../components/reusable-button";
+import { useAlert } from "../../../components/alert";
+import LoaderTab from "../../../components/loader";
 
 export default function ProductsContainer() {
   const [openModal, setOpenModal] = useState(false);
   const [detailData, setDetailData] = useState(null);
   const queryClient = useQueryClient();
+  const { showAlert } = useAlert();
 
   const { isPending, isError, data, error } = useQuery({
     queryKey: ["products"],
@@ -21,10 +24,10 @@ export default function ProductsContainer() {
       queryClient.invalidateQueries({ queryKey: ["products"] });
       setOpenModal(false);
       setDetailData(null);
-      alert("Product created successfully!");
+      showAlert("Product created successfully!", "success");
     },
     onError: (error) => {
-      alert(`Error creating product: ${error.message}`);
+      showAlert(`Error creating product: ${error.message}`, "error");
     },
   });
 
@@ -34,10 +37,10 @@ export default function ProductsContainer() {
       queryClient.invalidateQueries({ queryKey: ["products"] });
       setOpenModal(false);
       setDetailData(null);
-      alert("Product updated successfully!");
+      showAlert("Product updated successfully!", "success");
     },
     onError: (error) => {
-      alert(`Error updating product: ${error.message}`);
+      showAlert(`Error updating product: ${error.message}`, "error");
     },
   });
 
@@ -45,10 +48,10 @@ export default function ProductsContainer() {
     mutationFn: deleteProducts,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
-      alert("Product deleted successfully!");
+      showAlert("Product deleted successfully!", "success");
     },
     onError: (error) => {
-      alert(`Error deleting product: ${error.message}`);
+      showAlert(`Error deleting product: ${error.message}`, "error");
     },
   });
 
@@ -77,7 +80,7 @@ export default function ProductsContainer() {
   };
 
   if (isPending) {
-    return <div className="p-8 text-center">Loading...</div>;
+    return <LoaderTab />
   }
 
   if (isError) {

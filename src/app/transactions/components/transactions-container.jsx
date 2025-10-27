@@ -5,6 +5,8 @@ import TransactionsModal from "./transactions-modal";
 import TransactionDetailModal from "./transaction-detail-modal";
 import { useState } from "react";
 import Button from "../../../components/reusable-button";
+import { useAlert } from "../../../components/alert";
+import LoaderTab from "../../../components/loader";
 
 export default function TransactionsContainer() {
   const [openModal, setOpenModal] = useState(false);
@@ -12,6 +14,7 @@ export default function TransactionsContainer() {
   const [detailData, setDetailData] = useState(null);
   const [viewDetailData, setViewDetailData] = useState(null);
   const queryClient = useQueryClient();
+  const { showAlert } = useAlert();
 
   const { isPending, isError, data, error } = useQuery({
     queryKey: ["invoices"],
@@ -24,10 +27,10 @@ export default function TransactionsContainer() {
       queryClient.invalidateQueries({ queryKey: ["invoices"] });
       setOpenModal(false);
       setDetailData(null);
-      alert("Transaction created successfully!");
+      showAlert("Transaction created successfully!", "success");
     },
     onError: (error) => {
-      alert(`Error creating transaction: ${error.message}`);
+      showAlert(`Error creating transaction: ${error.message}`, "error");
     },
   });
 
@@ -37,10 +40,10 @@ export default function TransactionsContainer() {
       queryClient.invalidateQueries({ queryKey: ["invoices"] });
       setOpenModal(false);
       setDetailData(null);
-      alert("Transaction updated successfully!");
+      showAlert("Transaction updated successfully!", "success");
     },
     onError: (error) => {
-      alert(`Error updating transaction: ${error.message}`);
+      showAlert(`Error updating transaction: ${error.message}`, "error");
     },
   });
 
@@ -48,10 +51,10 @@ export default function TransactionsContainer() {
     mutationFn: deleteTransactions,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["invoices"] });
-      alert("Transaction deleted successfully!");
+      showAlert("Transaction deleted successfully!", "success");
     },
     onError: (error) => {
-      alert(`Error deleting transaction: ${error.message}`);
+      showAlert(`Error deleting transaction: ${error.message}`, "error");
     },
   });
 
@@ -85,7 +88,7 @@ export default function TransactionsContainer() {
   };
 
   if (isPending) {
-    return <div className="p-8 text-center">Loading...</div>;
+    return <LoaderTab />
   }
 
   if (isError) {
